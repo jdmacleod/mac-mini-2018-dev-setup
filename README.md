@@ -6,23 +6,42 @@ The document assumes you are new to Mac, but can also be useful if you are reins
 
 **Contributing**: If you find any mistakes in the steps described below, or if any of the commands are outdated, do let me know! For any other suggestions, please understand if I don't include everything. This guide was originally written for some friends getting started with programming on a Mac, and as a personal reference for myself. I'm trying to keep it simple!
 
-- [System update](#system-update)
-- [System preferences](#system-preferences)
-- [Security](#security)
-- [iTerm2](#iterm2)
-- [Homebrew](#homebrew)
-- [Git](#git)
-- [Visual Studio Code](#visual-studio-code)
-- [Vim](#vim)
-- [Python](#python)
-- [Node.js](#nodejs)
-- [Ruby](#ruby)
-- [Heroku](#heroku)
-- [PostgreSQL](#postgresql)
-- [Redis](#redis)
-- [Elasticsearch](#elasticsearch)
-- [Projects folder](#projects-folder)
-- [Apps](#apps)
+- [macOS Dev Setup](#macos-dev-setup)
+  - [System update](#system-update)
+  - [System preferences](#system-preferences)
+  - [Security](#security)
+  - [iTerm2](#iterm2)
+    - [Install](#install)
+    - [Beautiful terminal](#beautiful-terminal)
+  - [Homebrew](#homebrew)
+    - [Install](#install-1)
+    - [Usage](#usage)
+    - [Homebrew Services](#homebrew-services)
+  - [Git](#git)
+  - [Visual Studio Code](#visual-studio-code)
+  - [Vim](#vim)
+  - [Python](#python)
+    - [pip](#pip)
+    - [virtualenv](#virtualenv)
+    - [Anaconda and Miniconda](#anaconda-and-miniconda)
+    - [Known issue: `gettext` not found by `git` after installing Anaconda/Miniconda](#known-issue-gettext-not-found-by-git-after-installing-anacondaminiconda)
+  - [Node.js](#nodejs)
+    - [npm](#npm)
+  - [Ruby](#ruby)
+    - [Install](#install-2)
+    - [Usage](#usage-1)
+    - [RubyGems \& Bundler](#rubygems--bundler)
+  - [Heroku](#heroku)
+  - [PostgreSQL](#postgresql)
+    - [GUI](#gui)
+  - [Redis](#redis)
+  - [Elasticsearch](#elasticsearch)
+    - [Install](#install-3)
+    - [Usage](#usage-2)
+    - [GUI](#gui-1)
+  - [Projects folder](#projects-folder)
+  - [Apps](#apps)
+  - [AWS CDK](#aws-cdk)
 
 ## System update
 
@@ -72,7 +91,7 @@ Since we spend so much time in the terminal, we should try to make it a more ple
 
 First let's add some color. There are many great color schemes out there, but if you don't know where to start you can try [Atom One Dark](https://github.com/nathanbuchar/atom-one-dark-terminal). Download the iTerm presets for the theme by running:
 
-```
+```bash
 cd ~/Downloads
 curl -o "Atom One Dark.itermcolors" https://raw.githubusercontent.com/nathanbuchar/atom-one-dark-terminal/master/scheme/iterm/One%20Dark.itermcolors
 curl -o "Atom One Light.itermcolors" https://raw.githubusercontent.com/nathanbuchar/atom-one-dark-terminal/master/scheme/iterm/One%20Light.itermcolors
@@ -84,7 +103,7 @@ Not a lot of colors yet. We need to tweak a little bit our Unix user's profile f
 
 We'll come back to the details of that later, but for now, just download the files [.bash_profile](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_profile), [.bash_prompt](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_prompt), [.aliases](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.aliases) attached to this document into your home directory (`.bash_profile` is the one that gets loaded, I've set it up to call the others):
 
-```
+```bash
 cd ~
 curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_profile
 curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.bash_prompt
@@ -105,13 +124,13 @@ Package managers make it so much easier to install and update applications (for 
 
 An important dependency before Homebrew can work is the **Command Line Developer Tools** for **Xcode**. These include compilers that will allow you to build things from source. You can install them directly from the terminal with:
 
-```
+```bash
 xcode-select --install
 ```
 
 Once that is done, we can install Homebrew by copy-pasting the installation command from the [Homebrew homepage](http://brew.sh/) inside the terminal:
 
-```
+```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
@@ -119,7 +138,7 @@ Follow the steps on the screen. You will be prompted for your user password so H
 
 Once installation is complete, you can run the following command to make sure everything works:
 
-```
+```bash
 brew doctor
 ```
 
@@ -127,31 +146,31 @@ brew doctor
 
 To install a package (or **Formula** in Homebrew vocabulary) simply type:
 
-```
+```bash
 brew install <formula>
 ```
 
 To see if any of your packages need to be updated:
 
-```
+```bash
 brew outdated
 ```
 
 To update a package:
 
-```
+```bash
 brew upgrade <formula>
 ```
 
 Homebrew keeps older versions of packages installed, in case you want to rollback. That rarely is necessary, so you can do some cleanup to get rid of those old versions:
 
-```
+```bash
 brew cleanup
 ```
 
 To see what you have installed (with their version numbers):
 
-```
+```bash
 brew list --versions
 ```
 
@@ -163,19 +182,19 @@ Homebrew Services will automatically install itself the first time you run it, s
 
 After installing a service (for example a database), it should automatically add itself to Homebrew Services. If not, you can add it manually with:
 
-```
+```bash
 brew services <formula>
 ```
 
 Start a service with:
 
-```
+```bash
 brew services start <formula>
 ```
 
 At anytime you can view which services are running with:
 
-```
+```bash
 brew services list
 ```
 
@@ -183,13 +202,13 @@ brew services list
 
 macOS comes with a pre-installed version of [Git](http://git-scm.com/), but we'll install our own through Homebrew to allow easy upgrades and not interfere with the system version. To do so, simply run:
 
-```
+```bash
 brew install git
 ```
 
 When done, to test that it installed fine you can run:
 
-```
+```bash
 which git
 ```
 
@@ -197,7 +216,7 @@ The output should be `/usr/local/bin/git`.
 
 Let's set up some basic configuration. Download the [.gitconfig](https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.gitconfig) file to your home directory:
 
-```
+```bash
 cd ~
 curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.gitconfig
 ```
@@ -206,7 +225,7 @@ It will add some color to the `status`, `branch`, and `diff` Git commands, as we
 
 Next, we'll define your Git user (should be the same name and email you use for [GitHub](https://github.com/) and [Heroku](http://www.heroku.com/)):
 
-```
+```bash
 git config --global user.name "Your Name Here"
 git config --global user.email "your_email@youremail.com"
 ```
@@ -215,7 +234,7 @@ They will get added to your `.gitconfig` file.
 
 On a Mac, it is important to remember to add `.DS_Store` (a hidden macOS system file that's put in folders) to your project `.gitignore` files. You also set up a global `.gitignore` file, located for instance in your home directory (but you'll want to make sure any collaborators also do it):
 
-```
+```bash
 cd ~
 curl -O https://raw.githubusercontent.com/nicolashery/mac-dev-setup/master/.gitignore
 git config --global core.excludesfile ~/.gitignore
@@ -249,7 +268,7 @@ If you remember only one keyboard shortcut in VS Code, it should be **Cmd+Shift+
 
 Let's open the command palette now, and search for `Shell Command: Install 'code' command in PATH`. Hit enter when it shows up. This will install the command-line tool `code` to quickly open VS Code from the terminal. When in a projects directory, you'll be able to run:
 
-```
+```bash
 cd myproject/
 code .
 ```
@@ -272,7 +291,7 @@ Vim's default settings aren't great, and you could spend a lot of time tweaking 
 
 Using Vim's built-in package support, install these settings by running:
 
-```
+```bash
 mkdir -p ~/.vim/pack/tpope/start
 cd ~/.vim/pack/tpope/start
 git clone https://tpope.io/vim/sensible.git
@@ -286,7 +305,7 @@ macOS, like Linux, ships with [Python](http://python.org/) already installed. Bu
 
 Install `pyenv` via Homebrew by running:
 
-```
+```bash
 brew install pyenv
 ```
 
@@ -298,31 +317,31 @@ if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
 
 Save the file and reload it with:
 
-```
+```bash
 source ~/.bash_profile
 ```
 
 Before installing a new Python version, the [pyenv wiki](https://github.com/pyenv/pyenv/wiki) recommends having a few dependencies available:
 
-```
+```bash
 brew install openssl readline sqlite3 xz zlib
 ```
 
 We can now list all available Python versions by running:
 
-```
+```bash
 pyenv install --list
 ```
 
 Look for the latest 3.x version (or 2.7.x), and install it (replace the `.x.x` with actual numbers):
 
-```
+```bash
 pyenv install 3.x.x
 ```
 
 List the Python versions you have locally with:
 
-```
+```bash
 pyenv versions
 ```
 
@@ -330,19 +349,19 @@ The star (`*`) should indicate we are still using the `system` version, which is
 
 You can switch your current terminal to another Python version with:
 
-```
+```bash
 pyenv shell 3.x.x
 ```
 
 You should now see that version when running:
 
-```
+```bash
 python --version
 ```
 
 In a project directory, you can use:
 
-```
+```bash
 pyenv local 3.x.x
 ```
 
@@ -356,25 +375,25 @@ For more information, see the [pyenv commands](https://github.com/yyuu/pyenv/blo
 
 Here are a couple Pip commands to get you started. To install a Python package:
 
-```
+```bash
 pip install <package>
 ```
 
 To upgrade a package:
 
-```
+```bash
 pip install --upgrade <package>
 ```
 
 To see what's installed:
 
-```
+```bash
 pip freeze
 ```
 
 To uninstall a package:
 
-```
+```bash
 pip uninstall <package>
 ```
 
@@ -386,7 +405,7 @@ For a particular project, instead of installing required packages globally, it i
 
 Instead of installing and using `virtualenv` directly, we'll use the dedicated `pyenv` plugin [pyenv-virtualenv](https://github.com/yyuu/pyenv-virtualenv) which will make things a bit easier for us. Install it via Homebrew:
 
-```
+```bash
 brew install pyenv-virtualenv
 ```
 
@@ -398,25 +417,25 @@ if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -
 
 And reload it with:
 
-```
+```bash
 source ~/.bash_profile
 ```
 
 Now, let's say you have a project called `myproject`. You can set up a virtualenv for that project and the Python version it uses (replace `3.x.x` with the version you want):
 
-```
+```bash
 pyenv virtualenv 3.x.x myproject
 ```
 
 See the list of virtualenvs you created with:
 
-```
+```bash
 pyenv virtualenvs
 ```
 
 To use your project's virtualenv, you need to **activate** it first (in every terminal where you are working on your project):
 
-```
+```bash
 pyenv activate myproject
 ```
 
@@ -424,7 +443,7 @@ If you run `pyenv virtualenvs` again, you should see a star (`*`) next to the ac
 
 Now when you install something:
 
-```
+```bash
 pip install <package>
 ```
 
@@ -432,7 +451,7 @@ It will get installed in that virtualenv's folder, and not conflict with other p
 
 You can also set your project's `.python-version` to point to a virtualenv you created:
 
-```
+```bash
 pyenv local myproject
 ```
 
@@ -444,13 +463,13 @@ The Anaconda/Miniconda distributions of Python come with many useful tools for s
 
 You can install them using `pyenv`, for example (replace `x.x.x` with an actual version number):
 
-```
+```bash
 pyenv install miniconda3-x.x.x
 ```
 
 After loading an Anaconda or Miniconda Python distribution into your shell, you can create [conda](https://docs.conda.io/) environments (which are similar to virtualenvs):
 
-```
+```bash
 pyenv shell miniconda3-x.x.x
 conda create --name  mycondaproject
 conda activate mycondaproject
@@ -458,19 +477,19 @@ conda activate mycondaproject
 
 Install packages, for example the [Jupyter Notebook](https://jupyter.org/), using:
 
-```
+```bash
 conda install jupyter
 ```
 
 You should now be able to run the notebook:
 
-```
+```bash
 jupyter notebook
 ```
 
 Deactivate the environment, and return to the default Python version with:
 
-```
+```bash
 conda deactivate
 pyenv shell --unset
 ```
@@ -479,7 +498,7 @@ pyenv shell --unset
 
 If you installed an Anaconda/Miniconda distribution, you may start seeing an error message when using certain `git` commands, similar to this one:
 
-```
+```bash
 pyenv: gettext.sh: command not found
 
 The `gettext.sh' command exists in these Python versions:
@@ -488,7 +507,7 @@ The `gettext.sh' command exists in these Python versions:
 
 If that is the case, you can use the following [workaround](https://github.com/pyenv/pyenv/issues/688#issuecomment-428675578):
 
-```
+```bash
 brew install gettext
 ```
 
@@ -507,56 +526,56 @@ Install `nvm` by copy-pasting the [install script command](https://github.com/cr
 
 Once that is done, open a new terminal and verify that it was installed correctly by running:
 
-```
+```bash
 command -v nvm
 ```
 
 View the all available stable versions of Node with:
 
-```
+```bash
 nvm ls-remote --lts
 ```
 
 Install the latest stable version with:
 
-```
+```bash
 nvm install node
 ```
 
 It will also set the first version installed as your default version. You can install another specific version, for example Node 10, with:
 
-```
+```bash
 nvm install 10
 ```
 
 And switch between versions by using:
 
-```
+```bash
 nvm use 10
 nvm use default
 ```
 
 See which versions you have install with:
 
-```
+```bash
 nvm ls
 ```
 
 Change the default version with:
 
-```
+```bash
 nvm alias default 10
 ```
 
 In a project's directory you can create a `.nvmrc` file containing the Node.js version the project uses, for example:
 
-```
+```bash
 echo "10" > .nvmrc
 ```
 
 Next time you enter the project's directory from a terminal, you can load the correct version of Node.js by running:
 
-```
+```bash
 nvm use
 ```
 
@@ -566,39 +585,39 @@ Installing Node also installs the [npm](https://npmjs.org/) package manager.
 
 To install a package:
 
-```
+```bash
 npm install <package> # Install locally
 npm install -g <package> # Install globally
 ```
 
 To install a package and save it in your project's `package.json` file:
 
-```
+```bash
 npm install --save <package>
 ```
 
 To see what's installed:
 
-```
+```bash
 npm list --depth 1 # Local packages
 npm list -g --depth 1 # Global packages
 ```
 
 To find outdated packages (locally or globally):
 
-```
+```bash
 npm outdated [-g]
 ```
 
 To upgrade all or a particular package:
 
-```
+```bash
 npm update [<package>]
 ```
 
 To uninstall a package:
 
-```
+```bash
 npm uninstall --save <package>
 ```
 
@@ -610,7 +629,7 @@ Like Python, [Ruby](http://www.ruby-lang.org/) is already installed on Unix syst
 
 The recommended way to install Ruby is to use [rbenv](https://github.com/rbenv/rbenv), which allows you to manage multiple versions of Ruby on the same machine. You can install `rbenv` with Homebrew:
 
-```
+```bash
 brew install rbenv
 ```
 
@@ -622,7 +641,7 @@ eval "$(rbenv init -)"
 
 And reload it with:
 
-```
+```bash
 source ~/.bash_profile
 ```
 
@@ -630,43 +649,43 @@ source ~/.bash_profile
 
 The following command will show you which versions of Ruby are available to install:
 
-```
+```bash
 rbenv install --list
 ```
 
 You can find the latest version in that list and install it with (replace `.x.x` with actual version numbers):
 
-```
+```bash
 rbenv install 2.x.x
 ```
 
 Run the following to see which versions you have installed:
 
-```
+```bash
 rbenv versions
 ```
 
 The start (`*`) will show you that we are currently using the default `system` version. You can switch your terminal to use the one you just installed:
 
-```
+```bash
 rbenv shell 2.x.x
 ```
 
 You can also set it as the default version if you want:
 
-```
+```bash
 rbenv global 2.x.x
 ```
 
 In a specific project's directory, you can ask `rbenv` to create a `.ruby-version` file. Next time you enter that project's directory from the terminal, it will automatically load the correct Ruby version:
 
-```
+```bash
 rbenv local 2.x.x
 ```
 
 Check anytime which version you are using with:
 
-```
+```bash
 rbenv version
 ```
 
@@ -676,19 +695,19 @@ See [rbenv's command reference](https://github.com/rbenv/rbenv#command-reference
 
 [RubyGems](http://rubygems.org/), the Ruby package manager, was also installed:
 
-```
+```bash
 which gem
 ```
 
 The first thing you want to do after installing a new Ruby version is to install [Bundler](https://bundler.io/). This tool will allow you to set up separate environments for your different Ruby projects, so their required gem versions won't conflict with each other. Install Bundler with:
 
-```
+```bash
 gem install bundler
 ```
 
 In a new Ruby project directory, create a new `Gemfile` with:
 
-```
+```bash
 bundle init
 ```
 
@@ -702,7 +721,7 @@ gem "jekyll"
 
 Then install the project's dependencies with:
 
-```
+```bash
 bundle install
 ```
 
@@ -710,7 +729,7 @@ Make sure you check in both the `Gemfile` and `Gemfile.lock` into your Git repos
 
 Update a specific dependency with:
 
-```
+```bash
 bundle update <gem>
 ```
 
@@ -722,14 +741,14 @@ For more information, see the [Bundler documentation](https://bundler.io/docs.ht
 
 Assuming that you have an account (sign up if you don't), let's install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli):
 
-```
+```bash
 brew tap heroku/brew
 brew install heroku
 ```
 
 Login to your Heroku account using:
 
-```
+```bash
 heroku login
 ```
 
@@ -737,7 +756,7 @@ heroku login
 
 Once logged-in, you're ready to deploy apps! Heroku has great [Getting Started](https://devcenter.heroku.com/start) guides for different languages, so I'll let you refer to that. Heroku uses Git to push code for deployment, so make sure your app is under Git version control. A quick cheat sheet (if you've used Heroku before):
 
-```
+```bash
 cd myapp/
 heroku create myapp
 git push heroku master
@@ -753,13 +772,13 @@ The [Heroku Dev Center](https://devcenter.heroku.com/) is full of great resource
 
 Install PostgreSQL using Homebrew:
 
-```
+```bash
 brew install postgresql
 ```
 
 It will automatically add itself to Homebrew Services. Start it with:
 
-```
+```bash
 brew services start postgresql
 ```
 
@@ -777,13 +796,13 @@ If you prefer a GUI (Graphical User Interface), [Postico](https://eggerapps.at/p
 
 To install Redis, use Homebrew:
 
-```
+```bash
 brew install redis
 ```
 
 Start it through Homebrew Services with:
 
-```
+```bash
 brew services start redis
 ```
 
@@ -805,7 +824,7 @@ java -version
 
 If Java isn't installed yet, dismiss the window that just appeared by clicking "Ok", and install Java via Homebrew:
 
-```
+```bash
 brew cask install homebrew/cask-versions/java8
 ```
 
@@ -852,3 +871,22 @@ Here is a quick list of some apps I use, and that you might find useful as well:
 - [Postman](https://www.getpostman.com/): Easily make HTTP requests. Useful to test your REST APIs. **(Free for basic features)**
 - [GitHub Desktop](https://desktop.github.com/): I do everything through the `git` command-line tool, but I like to use GitHub Desktop just to review the diff of my changes. **(Free)**
 - [Spectacle](https://www.spectacleapp.com/): Move and resize windows with keyboard shortcuts. **(Free)**
+
+## AWS CDK
+
+This is for the [AWS CDK v2](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html).
+
+Install Node.js [as above](#nodejs).
+
+Use `npm` to install the AWS CDK CLI (globally):
+
+```bash
+npm install -g aws-cdk
+```
+
+Verify the CDK was installed by checking the version number.
+
+```bash
+~ cdk --version
+2.1006.0 (build a3b9762)
+```
