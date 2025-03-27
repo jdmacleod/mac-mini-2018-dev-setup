@@ -41,6 +41,7 @@ The document assumes you are new to Mac, but can also be useful if you are reins
     - [GUI](#gui-1)
   - [Projects folder](#projects-folder)
   - [Apps](#apps)
+  - [AWS CLI](#aws-cli)
   - [AWS CDK](#aws-cdk)
 
 ## System update
@@ -115,6 +116,8 @@ With that, open a new terminal tab (**Cmd+T**) and see the change! Try the list 
 Now we have a terminal we can work with!
 
 (Thanks to Mathias Bynens for his awesome [dotfiles](https://github.com/mathiasbynens/dotfiles).)
+
+Note: simplified this iTerm2 setup to use dark mode (Profiles->Color->Color Presets->Dark Background, use for light mode and dark mode when prompted). See <https://stackoverflow.com/questions/78526264/how-to-set-iterm2-color-to-darkmode-with-powerlevel10k>
 
 ## Homebrew
 
@@ -872,6 +875,25 @@ Here is a quick list of some apps I use, and that you might find useful as well:
 - [GitHub Desktop](https://desktop.github.com/): I do everything through the `git` command-line tool, but I like to use GitHub Desktop just to review the diff of my changes. **(Free)**
 - [Spectacle](https://www.spectacleapp.com/): Move and resize windows with keyboard shortcuts. **(Free)**
 
+## AWS CLI
+
+This is for the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html) - overall management of AWS.
+
+Install Homebrew [as above](#homebrew).
+
+Use `brew install awscli` to install the AWS CLI.
+
+```bash
+brew install awscli
+```
+
+Verify the AWS CLI was installed by checking the version number:
+
+```bash
+aws --version
+aws-cli/2.25.3 Python/3.12.9 Darwin/24.3.0 source/x86_64
+```
+
 ## AWS CDK
 
 This is for the [AWS CDK v2](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html).
@@ -884,9 +906,27 @@ Use `npm` to install the AWS CDK CLI (globally):
 npm install -g aws-cdk
 ```
 
-Verify the CDK was installed by checking the version number.
+Verify the AWS CDK was installed by checking the version number.
 
 ```bash
 ~ cdk --version
 2.1006.0 (build a3b9762)
+```
+
+Note: as of this writing, AWS CDK is expecting Node.js v22 as the highest supported version, but Node.js v23 is the latest stable version. We'll install Node.js v22 explicitly so it can be used with AWS CDK projects.
+
+```bash
+nvm install 22
+Downloading and installing node v22.14.0...
+Downloading https://nodejs.org/dist/v22.14.0/node-v22.14.0-darwin-x64.tar.xz...
+####################################################################################################################################################################################################################### 100.0%
+Computing checksum with sha256sum
+Checksums matched!
+Now using node v22.14.0 (npm v10.9.2)
+```
+
+And, repeat the `aws-cdk` installation for `npm`.
+
+```bash
+npm install -g aws-cdk
 ```
