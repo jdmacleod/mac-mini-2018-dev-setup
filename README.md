@@ -21,10 +21,9 @@ The document assumes you are new to Mac, but can also be useful if you are reins
   - [Visual Studio Code](#visual-studio-code)
   - [Vim](#vim)
   - [Python](#python)
-    - [pip](#pip)
+    - [UV](#uv)
+    - [pip (replacement via uv)](#pip-replacement-via-uv)
     - [virtualenv](#virtualenv)
-    - [Anaconda and Miniconda](#anaconda-and-miniconda)
-    - [Known issue: `gettext` not found by `git` after installing Anaconda/Miniconda](#known-issue-gettext-not-found-by-git-after-installing-anacondaminiconda)
   - [Node.js](#nodejs)
     - [npm](#npm)
   - [Ruby](#ruby)
@@ -304,222 +303,77 @@ With that, Vim will look a lot better next time you open it!
 
 ## Python
 
-macOS, like Linux, ships with [Python](http://python.org/) already installed. But you don't want to mess with the system Python (some system tools rely on it, etc.), so we'll install our own version using [pyenv](https://github.com/yyuu/pyenv). This will also allow us to manage multiple versions of Python (ex: 2.7 and 3) should we need to.
+Python version, package, and project management will be done using [Astral's uv](https://docs.astral.sh/uv/).
 
-Install `pyenv` via Homebrew by running:
-
-```bash
-brew install pyenv
-```
-
-When finished, you should see instructions to add something to your profile. Open your `.bash_profile` in the home directory (you can use `code ~/.bash_profile`), and add the following line:
+### UV
 
 ```bash
-if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
-```
-
-Save the file and reload it with:
-
-```bash
-source ~/.bash_profile
-```
-
-Before installing a new Python version, the [pyenv wiki](https://github.com/pyenv/pyenv/wiki) recommends having a few dependencies available:
-
-```bash
-brew install openssl readline sqlite3 xz zlib
+brew install uv
 ```
 
 We can now list all available Python versions by running:
 
 ```bash
-pyenv install --list
+uv python list
 ```
 
-Look for the latest 3.x version (or 2.7.x), and install it (replace the `.x.x` with actual numbers):
+A new version of Python can be installed in the following way:
 
 ```bash
-pyenv install 3.x.x
+uv python install 3.13
 ```
 
-List the Python versions you have locally with:
+`uv` supersedes the legacy `pip` workflow with new commands like `init`, `add`, and `sync`, see the [Working on projects page](https://docs.astral.sh/uv/guides/projects/).
+
+### pip (replacement via uv)
+
+A [pip](https://docs.astral.sh/uv/pip/) replacement is available through `uv`. It is a way to manage packages for Python.
+
+Here are a couple uv + Pip commands to get you started. To install a Python package:
 
 ```bash
-pyenv versions
-```
-
-The star (`*`) should indicate we are still using the `system` version, which is the default. I recommend leaving it as the default as some [Node.js](https://nodejs.org/en/) packages will use it in their installation process.
-
-You can switch your current terminal to another Python version with:
-
-```bash
-pyenv shell 3.x.x
-```
-
-You should now see that version when running:
-
-```bash
-python --version
-```
-
-In a project directory, you can use:
-
-```bash
-pyenv local 3.x.x
-```
-
-This will save that project's Python version to a `.python-version` file. Next time you enter the project's directory from a terminal, `pyenv` will automatically load that version for you.
-
-For more information, see the [pyenv commands](https://github.com/yyuu/pyenv/blob/master/COMMANDS.md) documentation.
-
-### pip
-
-[pip](https://pip.pypa.io) was also installed by `pyenv`. It is the package manager for Python.
-
-Here are a couple Pip commands to get you started. To install a Python package:
-
-```bash
-pip install <package>
+uv pip install <package>
 ```
 
 To upgrade a package:
 
 ```bash
-pip install --upgrade <package>
+uv pip install --upgrade <package>
 ```
 
 To see what's installed:
 
 ```bash
-pip freeze
+uv pip list
+```
+
+To list what's installed in a `requirements.txt` format:
+
+```bash
+uv pip freeze
 ```
 
 To uninstall a package:
 
 ```bash
-pip uninstall <package>
+uv pip uninstall <package>
 ```
 
 ### virtualenv
 
-[virtualenv](https://virtualenv.pypa.io) is a tool that creates an isolated Python environment for each of your projects.
-
-For a particular project, instead of installing required packages globally, it is best to install them in an isolated folder, that will be managed by `virtualenv`. The advantage is that different projects might require different versions of packages, and it would be hard to manage that if you install packages globally.
-
-Instead of installing and using `virtualenv` directly, we'll use the dedicated `pyenv` plugin [pyenv-virtualenv](https://github.com/yyuu/pyenv-virtualenv) which will make things a bit easier for us. Install it via Homebrew:
-
-```bash
-brew install pyenv-virtualenv
-```
-
-After installation, add the following line to your `.bash_profile`:
-
-```bash
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-```
-
-And reload it with:
-
-```bash
-source ~/.bash_profile
-```
-
-Now, let's say you have a project called `myproject`. You can set up a virtualenv for that project and the Python version it uses (replace `3.x.x` with the version you want):
-
-```bash
-pyenv virtualenv 3.x.x myproject
-```
-
-See the list of virtualenvs you created with:
-
-```bash
-pyenv virtualenvs
-```
-
 To use your project's virtualenv, you need to **activate** it first (in every terminal where you are working on your project):
 
 ```bash
-pyenv activate myproject
+source .venv/bin/activate
 ```
-
-If you run `pyenv virtualenvs` again, you should see a star (`*`) next to the active virtualenv.
 
 Now when you install something:
 
 ```bash
-pip install <package>
+uv pip install <package>
 ```
 
 It will get installed in that virtualenv's folder, and not conflict with other projects.
-
-You can also set your project's `.python-version` to point to a virtualenv you created:
-
-```bash
-pyenv local myproject
-```
-
-Next time you enter that project's directory, `pyenv` will automatically load the virtualenv for you.
-
-### Anaconda and Miniconda
-
-The Anaconda/Miniconda distributions of Python come with many useful tools for scientific computing.
-
-You can install them using `pyenv`, for example (replace `x.x.x` with an actual version number):
-
-```bash
-pyenv install miniconda3-x.x.x
-```
-
-After loading an Anaconda or Miniconda Python distribution into your shell, you can create [conda](https://docs.conda.io/) environments (which are similar to virtualenvs):
-
-```bash
-pyenv shell miniconda3-x.x.x
-conda create --name  mycondaproject
-conda activate mycondaproject
-```
-
-Install packages, for example the [Jupyter Notebook](https://jupyter.org/), using:
-
-```bash
-conda install jupyter
-```
-
-You should now be able to run the notebook:
-
-```bash
-jupyter notebook
-```
-
-Deactivate the environment, and return to the default Python version with:
-
-```bash
-conda deactivate
-pyenv shell --unset
-```
-
-### Known issue: `gettext` not found by `git` after installing Anaconda/Miniconda
-
-If you installed an Anaconda/Miniconda distribution, you may start seeing an error message when using certain `git` commands, similar to this one:
-
-```bash
-pyenv: gettext.sh: command not found
-
-The `gettext.sh' command exists in these Python versions:
-  miniconda3-latest
-```
-
-If that is the case, you can use the following [workaround](https://github.com/pyenv/pyenv/issues/688#issuecomment-428675578):
-
-```bash
-brew install gettext
-```
-
-Then add this line to your `.bash_profile`:
-
-```bash
-# Workaround for: https://github.com/pyenv/pyenv/issues/688#issuecomment-428675578
-export PATH="/usr/local/opt/gettext/bin:$PATH"
-```
 
 ## Node.js
 
