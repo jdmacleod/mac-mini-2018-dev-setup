@@ -30,6 +30,8 @@ The document assumes you are new to Mac, but can also be useful if you are reins
     - [Install](#install-2)
     - [Usage](#usage-1)
     - [RubyGems \& Bundler](#rubygems--bundler)
+      - [Note: Ruby Updated for 2025](#note-ruby-updated-for-2025)
+        - [Install Jekyll](#install-jekyll)
   - [Heroku](#heroku)
   - [PostgreSQL](#postgresql)
     - [GUI](#gui)
@@ -42,6 +44,7 @@ The document assumes you are new to Mac, but can also be useful if you are reins
   - [Apps](#apps)
   - [AWS CLI](#aws-cli)
   - [AWS CDK](#aws-cdk)
+  - [GitHub CLI](#github-cli)
 
 ## System update
 
@@ -592,6 +595,40 @@ bundle update <gem>
 
 For more information, see the [Bundler documentation](https://bundler.io/docs.html).
 
+#### Note: Ruby Updated for 2025
+
+<https://jekyllrb.com/docs/installation/macos/>
+
+```bash
+$ brew install chruby ruby-install
+...
+```
+
+```bash
+$ ruby-install ruby 3.4.1
+...
+>>> Successfully installed ruby 3.4.1 into /Users/jason/.rubies/ruby-3.4.1
+```
+
+Open a new Terminal, and check the version of `ruby`.
+
+```bash
+$ ruby -v
+ruby 3.4.1 (2024-12-25 revision 48d4efcb85) +PRISM [x86_64-darwin24]
+```
+
+##### Install Jekyll
+
+```bash
+$ gem install jekyll
+...
+Successfully installed jekyll-4.4.1
+28 gems installed
+
+A new release of RubyGems is available: 3.6.2 → 3.6.7!
+Run `gem update --system 3.6.7` to update your installation.
+```
+
 ## Heroku
 
 [Heroku](http://www.heroku.com/) is a [Platform-as-a-Service](http://en.wikipedia.org/wiki/Platform_as_a_service) (PaaS) that makes it really easy to deploy your apps. There are other similar solutions out there, but Heroku is among the most popular. Not only does it make a developer's life easier, but I find that having Heroku deployment in mind when building an app forces you to follow modern app development [best practices](http://www.12factor.net/).
@@ -783,4 +820,15 @@ And, repeat the `aws-cdk` installation for `npm`.
 
 ```bash
 npm install -g aws-cdk
+```
+
+## GitHub CLI
+
+GitHub has a CLI interface that is helpful to use, especially within CI/CD workflows.
+
+```bash
+brew install gh
+...
+🍺  /usr/local/Cellar/gh/2.69.0: 212 files, 43.3MB
+==> Running `brew cleanup gh`...
 ```
