@@ -45,6 +45,8 @@ The document assumes you are new to Mac, but can also be useful if you are reins
   - [AWS CLI](#aws-cli)
   - [AWS CDK](#aws-cdk)
   - [GitHub CLI](#github-cli)
+  - [Vercel CLI](#vercel-cli)
+  - [Docker](#docker)
 
 ## System update
 
@@ -831,4 +833,21 @@ brew install gh
 ...
 🍺  /usr/local/Cellar/gh/2.69.0: 212 files, 43.3MB
 ==> Running `brew cleanup gh`...
+```
+
+## Vercel CLI
+
+Vercel has a CLI interface that is helpful to use, when testing deployment.
+
+```bash
+npm install vercel -g
+...
+```
+
+## Docker
+
+Docker is an infrastructure for running containerized applications.
+
+```bash
+brew install docker
 ```
