@@ -47,6 +47,14 @@ The document assumes you are new to Mac, but can also be useful if you are reins
   - [GitHub CLI](#github-cli)
   - [Vercel CLI](#vercel-cli)
   - [Docker](#docker)
+  - [Anthropic Claude Desktop](#anthropic-claude-desktop)
+    - [MCP Setup](#mcp-setup)
+      - [Brave Search Integration](#brave-search-integration)
+      - [Web Server Fetch Integration](#web-server-fetch-integration)
+      - [Filesystem Integration](#filesystem-integration)
+      - [Sequential Thinking Integration](#sequential-thinking-integration)
+      - [Tavily Search Integration](#tavily-search-integration)
+      - [Time Integration](#time-integration)
 
 ## System update
 
@@ -849,5 +857,66 @@ npm install vercel -g
 Docker is an infrastructure for running containerized applications.
 
 ```bash
-brew install docker
+brew install --cask docker
 ```
+
+password prompt will happen during `brew` installation. 
+
+Launch Docker for the first time, using `Command-Space` and find 'Docker.app'.
+
+Grant Docker privileged access using the system dialogs.
+
+Test the docker installation:
+
+```bash
+docker --version
+Docker version 28.0.4, build b8034c0
+```
+
+```bash
+docker run hello-world
+...
+```
+
+## Anthropic Claude Desktop
+
+Claude Desktop is needed for experimenting with MCP (Model Context Protocol) workflows (connecting external resources and tools) with Anthropic's Claude LLM.
+
+Prerequisites are `npm`, `python`, and Astral's `uv`.
+
+<https://claude.ai/download>
+
+### MCP Setup
+
+Edit the Claude Desktop Config file in Claude->Settings->Developer <claude_desktop_config.json> to add these integrations:
+
+```json
+{
+  "mcpServers": {
+    ...
+}
+```
+
+#### Brave Search Integration
+
+<https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search>
+
+#### Web Server Fetch Integration
+
+<https://github.com/modelcontextprotocol/servers/blob/main/src/fetch>
+
+#### Filesystem Integration
+
+<https://github.com/modelcontextprotocol/servers/blob/main/src/filesystem>
+
+#### Sequential Thinking Integration
+
+<https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking>
+
+#### Tavily Search Integration
+
+<https://github.com/tavily-ai/tavily-mcp>
+
+#### Time Integration
+
+<https://github.com/modelcontextprotocol/servers/tree/main/src/time>
